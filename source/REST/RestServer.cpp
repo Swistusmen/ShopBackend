@@ -10,22 +10,34 @@ void display_json(
 }
 
 void handle_get(http_request request){
-    std::cout<<L"\nhandle GET\n";
+    std::wcout<<L"\nhandle GET\n";
 
    auto answer = json::value::object();
+   auto a=request.relative_uri();
 
-/*
-   for (auto const & p : dictionary)
-   {
-      answer[p.first] = json::value::string(p.second);
-   }
+    /*
+    TODO:
+    -handle this:
+    -just get returns whole list of products
+    -get /product gets the information about the product
+    -else / error
+    */
+   std::wstring o1=std::wstring(a.path().begin(),a.path().end());
+   std::wcout<<o1<<std::endl;
 
-   display_json(json::value::null(), L"R: ");
-   display_json(answer, L"S: ");
-   */
-  
-  display_json(answer, "S: ");
+    display_json(answer, "S: ");
    request.reply(status_codes::OK, answer);
+}
+
+void handle_post(http_request request){
+    std::wcout<<L"\nhandle POST\n";
+
+    auto answer=json::value::object();
+    request.extract_json().then([&answer](pplx::task<json::value> task){
+
+    }).wait();
+
+    request.reply(status_codes::OK,answer);
 }
 
 //SERVER
@@ -38,7 +50,7 @@ void Server::run(){
    {
       listener
          .open()
-         .then([this]() { std::cout<<"Starting to listen\n";})
+         .then([this]() { std::wcout<<"Starting to listen\n";})
          .wait();
 
       while (true);

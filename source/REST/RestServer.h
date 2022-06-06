@@ -10,6 +10,7 @@ using namespace web::http::experimental::listener;
 namespace REST{
 
 void handle_get(http_request request);
+void handle_post(http_request request);
 void display_json(json::value const & jvalue,utility::string_t const & prefix);
 
 class Server{
