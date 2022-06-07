@@ -14,6 +14,7 @@ set_target_properties(cpprestsdk::cpprestsdk_openssl_internal PROPERTIES
 
 include_directories(
     REST
+    Parser
 )
 
 add_executable(${PROJECT_NAME}
@@ -21,6 +22,7 @@ add_executable(${PROJECT_NAME}
 
     REST/RestServer.h 
     REST/RestServer.cpp
+    Parser/Parser.h
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE cpprestsdk::cpprest)
