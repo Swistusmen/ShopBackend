@@ -3,11 +3,11 @@
 #include <cpprest/http_listener.h>
 #include <cpprest/json.h>
 
+namespace REST{
+
 using namespace web;
 using namespace web::http;
 using namespace web::http::experimental::listener;
-
-namespace REST{
 
 void handle_get(http_request request);
 void handle_post(http_request request);

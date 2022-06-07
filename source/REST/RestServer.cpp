@@ -29,12 +29,41 @@ void handle_get(http_request request){
    request.reply(status_codes::OK, answer);
 }
 
+
+//Testing:
+//curl -X POST http://127.0.0.1:8080 -H "Content: application/json" -d '{"product":"a","number":9}'
 void handle_post(http_request request){
     std::wcout<<L"\nhandle POST\n";
+    bool isSuccess{false};
+
+    request.headers().set_content_type("application/json");
 
     auto answer=json::value::object();
-    request.extract_json().then([&answer](pplx::task<json::value> task){
+    request.extract_json().then([&answer,&request,&isSuccess](pplx::task<json::value> task){
+        try{
+            auto a=task.get();
+            auto b=a.serialize();
+            std::wstring req=std::wstring(b.begin(),b.end());
+            std::wcout<<req<<std::endl;
 
+            auto number=a.at("number");
+            auto c=number.serialize();
+            std::wcout<<number.as_integer()<<std::endl;
+            std::wstring res=std::wstring(c.begin(),c.end());
+            std::wcout<<res<<std::endl;
+
+            auto num=number.as_integer();
+            if(num<10){
+                answer["is_lower_than_ten"]=1;
+                isSuccess=true;
+            }else{
+                answer["is_lower_than_ten"]=0;
+                isSuccess=false;
+            }
+
+        }catch(const std::exception& e){
+            std::wcout<<e.what()<<std::endl;
+        }
     }).wait();
 
     request.reply(status_codes::OK,answer);
@@ -43,6 +72,7 @@ void handle_post(http_request request){
 //SERVER
 Server::Server(const std::string& _addrress):listener(_addrress){
     listener.support(methods::GET, handle_get);
+    listener.support(methods::POST,handle_post);
 }
 
 void Server::run(){
@@ -61,3 +91,4 @@ void Server::run(){
    }
 }
 }
+ 
