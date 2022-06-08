@@ -22,6 +22,8 @@ add_executable(${PROJECT_NAME}
 
     REST/RestServer.h 
     REST/RestServer.cpp
+    SQLDriver/SQLDriver.h 
+    SQLDriver/SQLDriver.cpp
     Parser/Parser.h
 )
 

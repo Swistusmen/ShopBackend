@@ -3,23 +3,26 @@
 #include <cpprest/http_listener.h>
 #include <cpprest/json.h>
 
-namespace REST{
+namespace REST
+{
 
-using namespace web;
-using namespace web::http;
-using namespace web::http::experimental::listener;
+    using namespace web;
+    using namespace web::http;
+    using namespace web::http::experimental::listener;
 
-void handle_get(http_request request);
-void handle_post(http_request request);
-void display_json(json::value const & jvalue,utility::string_t const & prefix);
+    void handle_get(http_request request);
+    void handle_post(http_request request);
+    void display_json(json::value const &jvalue, utility::string_t const &prefix);
 
-class Server{
+    class Server
+    {
     public:
-        Server(const std::string& _addrress);
+        Server(const std::string &_addrress);
 
         void run();
+
     private:
         http_listener listener;
-};
+    };
 
 }

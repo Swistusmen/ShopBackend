@@ -59,7 +59,12 @@ static std::tuple<ParserResult,int,std::string> processInputArguments(int argc,c
             printf("--p bad argument error\n");
             return {ParserResult::EXIT,defaultPortNumber,defaultAddress};
         }
+        try{
         port=std::stoi(arguments.at(key).at(1));
+        }catch(const std::exception& e){
+            printf("Error, bad port given\n");
+            return {ParserResult::EXIT,defaultPortNumber,defaultAddress};
+        }
     }
     if((key=findKey("--a"))!=-1){
         if(arguments.at(key).size()!=2){
@@ -68,6 +73,8 @@ static std::tuple<ParserResult,int,std::string> processInputArguments(int argc,c
         }
         address=arguments.at(key).at(1);
     }
+    
+    printf("Running on: %s | database connection on port %d \n",address.c_str(),port);
     return {ParserResult::RUN,port,address};
 }
 }
