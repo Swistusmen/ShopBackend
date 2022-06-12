@@ -31,7 +31,7 @@ void Request::communication()
         socket.write_some(boost::asio::buffer(request, request.length() * sizeof(char)));
 
         socket.read_some(boost::asio::buffer(buf), error);
-        response = static_cast<std::string>(buf.data());
+        response = trimMessage(static_cast<std::string>(buf.data()));
         isFinished = true;
     }
     catch (const std::exception &e)
