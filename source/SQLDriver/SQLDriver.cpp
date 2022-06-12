@@ -6,18 +6,23 @@ SQLDriver::SQLDriver(const int _port, const std::string& _address):communication
 //{"products":["apples":1,"bananas":10]}
 web::json::value SQLDriver::getAllProductsInformation()
 {
-    auto response=communicationManager.make_request("select id, name, quantitiy from products");
-    while(response.finished()){
-      std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    //auto response=communicationManager.make_request("select id, name, quantitiy from products");
+    //auto& response=communicationManager.make_request("select product_id, product_name, product_price from products");
+    auto& response=communicationManager.make_request("select * from products");
+   while(true){
+       if(response.getResponse().has_value()){
+           break;
+       }
     }
-    const auto table=decodeSQLMessage(response.getResponse().value(),2);
+
+    const auto table=decodeSQLMessage(response.getResponse().value(),3);
    return createJSONTableOfProducts(table);
 }
 
 //{"product":"apple","quantity":9,"price":2.99}
 web::json::value SQLDriver::getProductData(const int _id)
 {
-    auto response=communicationManager.make_request("select name, quantity, price from products where id = "+std::to_string(_id));
+    auto& response=communicationManager.make_request("select name, quantity, price from products where id = "+std::to_string(_id));
     while(response.finished()){
       std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
@@ -32,8 +37,14 @@ bool SQLDriver::updateData(std::vector<std::array<std::string,2>>& args, const i
 
 std::vector<std::vector<std::string>> SQLDriver::decodeSQLMessage(const std::string& message,const int rowSize)
 {
-    const auto words=splitString(message,' ');
     std::vector<std::vector<std::string>>table;
+
+    const auto words=splitString(message,' ');
+
+    for(const auto& it: words){
+        std::cout<<it<<" "; 
+    }std::cout<<std::endl;
+
     if(words.size()%productTableEntitySize!=0){
         const int noEntities{words.size()/rowSize};
         for(int i=0;i<noEntities;i++){
@@ -41,6 +52,7 @@ std::vector<std::vector<std::string>> SQLDriver::decodeSQLMessage(const std::str
             table.back().insert(table.back().end(),words.begin()+i*rowSize,words.begin()+(i+1)*rowSize);
         }
     }
+
     return table;
 }
 

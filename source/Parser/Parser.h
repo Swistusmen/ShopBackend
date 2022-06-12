@@ -9,7 +9,7 @@
 namespace Parser{
 static constexpr int defaultPortNumber{3306};
 static const std::string defaultAddress{"http://127.0.0.1:8080"};
-static const std::string defaultSQLServerAddress{"http://127.0.0.1"};
+static const std::string defaultSQLServerAddress{"127.0.0.1"};
 
 enum class ParserResult{
     RUN,
@@ -58,7 +58,7 @@ static ProgramDriver processInputArguments(int argc,char* argv[]){
 
     int key{-1};
     if((key=findKey("--h"))!=-1){
-        printf("--h help /n --a http address together with port.You can reach this app under this address /n --p port to hit to get to db \n");
+        printf("--h help /n --a http address together with port.You can reach this app under this address /n --p port to hit to get to db \n--sql to give sqldatabase address \n");
         return driver;
     }
 

@@ -2,7 +2,7 @@ Założenie:
 -program odbierający JSONy z frontendu i operujący na logice biznesowej (baza danych to ta stworzona przez mnie)
 
 TODO:
-1. parsowanie argummentów wejścia
+1. parsowanie argummentów wejścia DONE:
 2. zapytania do mojej bazy danych
 3. odbiór i wysylka wiadomości do frontendu
 4. Zapytania do MongoDB
