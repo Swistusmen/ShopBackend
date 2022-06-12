@@ -37,7 +37,8 @@ std::vector<std::vector<std::string>> SQLDriver::decodeSQLMessage(const std::str
     if(words.size()%productTableEntitySize!=0){
         const int noEntities{words.size()/rowSize};
         for(int i=0;i<noEntities;i++){
-            table.insert(table.end(),words.begin()+i*rowSize,words.begin()+(i+1)*rowSize);
+            table.push_back({});
+            table.back().insert(table.back().end(),words.begin()+i*rowSize,words.begin()+(i+1)*rowSize);
         }
     }
     return table;

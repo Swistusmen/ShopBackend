@@ -9,10 +9,18 @@
 namespace Parser{
 static constexpr int defaultPortNumber{3306};
 static const std::string defaultAddress{"http://127.0.0.1:8080"};
+static const std::string defaultSQLServerAddress{"http://127.0.0.1"};
 
 enum class ParserResult{
     RUN,
     EXIT,
+};
+
+struct ProgramDriver{
+    int port{defaultPortNumber};
+    std::string address{defaultAddress};
+    std::string sqlAddress{defaultSQLServerAddress};
+    ParserResult result{ParserResult::EXIT};
 };
 
 static void parseArguments(const int argc,char* argv[],std::vector<std::array<std::string,2>>& args)
@@ -28,10 +36,11 @@ static void parseArguments(const int argc,char* argv[],std::vector<std::array<st
     }
 }
 
-static std::tuple<ParserResult,int,std::string> processInputArguments(int argc,char* argv[]){
+static ProgramDriver processInputArguments(int argc,char* argv[]){
+    ProgramDriver driver;
     if (argc==1){
         printf("Using 3306\n");
-        return {ParserResult::RUN,defaultPortNumber,defaultAddress};
+        return driver;
     }
     std::vector<std::array<std::string,2>> arguments;
     
@@ -50,31 +59,38 @@ static std::tuple<ParserResult,int,std::string> processInputArguments(int argc,c
     int key{-1};
     if((key=findKey("--h"))!=-1){
         printf("--h help /n --a http address together with port.You can reach this app under this address /n --p port to hit to get to db \n");
-        return {ParserResult::EXIT,defaultPortNumber,defaultAddress};
+        return driver;
     }
-    std::string address=defaultAddress;
-    int port=defaultPortNumber;
+
     if((key=findKey("--p"))!=-1){
         if(arguments.at(key).size()!=2){
             printf("--p bad argument error\n");
-            return {ParserResult::EXIT,defaultPortNumber,defaultAddress};
+            return driver;
         }
         try{
-        port=std::stoi(arguments.at(key).at(1));
+        driver.port=std::stoi(arguments.at(key).at(1));
         }catch(const std::exception& e){
             printf("Error, bad port given\n");
-            return {ParserResult::EXIT,defaultPortNumber,defaultAddress};
+            return driver;
         }
     }
     if((key=findKey("--a"))!=-1){
         if(arguments.at(key).size()!=2){
             printf("--a bad argument error\n");
-            return {ParserResult::EXIT,defaultPortNumber,defaultAddress};
+            return driver;
         }
-        address=arguments.at(key).at(1);
+        driver.address=arguments.at(key).at(1);
+    }
+    if((key=findKey("--sql"))!=-1){
+        if(arguments.at(key).size()!=2){
+            printf("--sql bad argument error\n");
+            return driver;
+        }
+        driver.sqlAddress=arguments.at(key).at(1);
     }
     
-    printf("Running on: %s | database connection on port %d \n",address.c_str(),port);
-    return {ParserResult::RUN,port,address};
+    printf("Running on: %s | database connection on port %d \n",driver.address.c_str(),driver.port);
+    driver.result=ParserResult::RUN;
+    return driver;
 }
 }
