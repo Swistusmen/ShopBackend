@@ -44,11 +44,12 @@ std::string Request::trimMessage(const std::string &msg)
     std::string trimmedMessage{""};
     for (const auto &it : msg)
     {
-        if (it > 47 && it < 90 || it > 96 && it < 123 || it == '*' || it == ',' || it == ' ')
+        if (it > 47 && it < 90 || it > 96 && it < 123 || it == '*' || it == ',' || it == ' '||it=='\n')
         {
             trimmedMessage += it;
         }
     }
+    std::cout<<msg<<"\n\n"<<trimmedMessage<<std::endl;
     return trimmedMessage;
 }
 

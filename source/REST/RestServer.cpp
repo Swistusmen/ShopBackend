@@ -116,14 +116,18 @@ namespace REST
         auto get=[this](http_request request){
             std::wcout << L"\nhandle GET\n";
 
-        //auto answer = json::value::object();
         auto a = request.relative_uri();
-        std::wstring o1 = std::wstring(a.path().begin(), a.path().end());
-        std::wcout<<o1<<std::endl;
+        std::wstring path = std::wstring(a.path().begin(), a.path().end());
+        std::string arg{a.to_string()};
+        if(arg=="\""){
         auto answer=driver.getAllProductsInformation();
-        std::wcout<<"Dupa\n";
         display_json(answer, "S: ");
         request.reply(status_codes::OK, answer);
+        }else{
+            auto answer=driver.getProductData(arg);
+            display_json(answer, "S: ");
+        request.reply(status_codes::OK, answer);
+        }
         };
 
         //listener.support(methods::GET, handle_get);

@@ -3,7 +3,7 @@ Założenie:
 
 TODO:
 1. parsowanie argummentów wejścia DONE:
-2. zapytania do mojej bazy danych
+2. zapytania do mojej bazy danych DONE:
 3. odbiór i wysylka wiadomości do frontendu
 4. Zapytania do MongoDB
 

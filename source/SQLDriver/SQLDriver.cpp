@@ -6,22 +6,30 @@ SQLDriver::SQLDriver(const int _port, const std::string& _address):communication
 //{"products":["apples":1,"bananas":10]}
 web::json::value SQLDriver::getAllProductsInformation()
 {
-   auto& response=communicationManager.make_request("select * from products");
+   auto& response=communicationManager.make_request("select * from myshop");
    while(true){
        if(response.getResponse().has_value()){
            break;
        }
     }
-    const auto table=decodeSQLMessage(response.getResponse().value(),3);
+    const auto table=decodeSQLMessage(response.getResponse().value(),2);
    return createJSONTableOfProducts(table);
 }
 
 //{"product":"apple","quantity":9,"price":2.99}
-web::json::value SQLDriver::getProductData(const int _id)
+web::json::value SQLDriver::getProductData(const std::string& _id)
 {
-    auto& response=communicationManager.make_request("select name, quantity, price from products where id = "+std::to_string(_id));
-    while(response.finished()){
-      std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    std::string message{""};
+    for(const auto& it:_id){
+        if(it!='/'){
+            message+=it;
+        }
+    }
+    auto& response=communicationManager.make_request("select product, quantity, price from myshop where product = "+message);
+    while(true){
+       if(response.getResponse().has_value()){
+           break;
+       }
     }
     const auto table=decodeSQLMessage(response.getResponse().value(),3);
     return mapTableToJSON(table,{"product","quantity","price"});
@@ -73,8 +81,8 @@ web::json::value SQLDriver::mapTableToJSON(const std::vector<std::vector<std::st
 {
     auto myJson=web::json::value::object();
     if(!table.empty()&&table.at(0).size()==labels.size()){
-        for(int i=0;i<table[0].size();i++){
-            std::string val=table[0][i];
+        for(int i=0;i<table[1].size();i++){
+            std::string val=table[1][i];
             myJson[labels[i].c_str()]=web::json::value::string(val);
         }
     }
