@@ -2,6 +2,7 @@
 
 #include <cpprest/http_listener.h>
 #include <cpprest/json.h>
+#include "../SQLDriver/SQLDriver.h"
 
 namespace REST
 {
@@ -16,12 +17,14 @@ namespace REST
     class Server
     {
     public:
-        Server(const std::string &_addrress);
+        Server(const std::string &_addrress, SQLDriver& );
 
         void run();
+        void a(http_request request);
 
     private:
         http_listener listener;
+        SQLDriver& driver;
     };
 
 }

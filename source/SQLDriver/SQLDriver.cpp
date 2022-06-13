@@ -6,15 +6,12 @@ SQLDriver::SQLDriver(const int _port, const std::string& _address):communication
 //{"products":["apples":1,"bananas":10]}
 web::json::value SQLDriver::getAllProductsInformation()
 {
-    //auto response=communicationManager.make_request("select id, name, quantitiy from products");
-    //auto& response=communicationManager.make_request("select product_id, product_name, product_price from products");
-    auto& response=communicationManager.make_request("select * from products");
+   auto& response=communicationManager.make_request("select * from products");
    while(true){
        if(response.getResponse().has_value()){
            break;
        }
     }
-
     const auto table=decodeSQLMessage(response.getResponse().value(),3);
    return createJSONTableOfProducts(table);
 }

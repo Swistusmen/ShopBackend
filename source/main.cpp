@@ -12,10 +12,9 @@
 int main(int argc, char *argv[])
 {
     const auto driver = Parser::processInputArguments(argc, argv);
-    /*REST::Server server(driver.address);
-    server.run();*/
-
     SQLDriver sql(driver.port,driver.sqlAddress);
-    sql.getAllProductsInformation();
+    REST::Server server(driver.address,sql);
+    server.run();
+
     return 0;
 }

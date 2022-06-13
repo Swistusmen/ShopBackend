@@ -16,7 +16,7 @@ namespace REST
 
         auto answer = json::value::object();
         auto a = request.relative_uri();
-
+    
         /*
         TODO:
         -handle this:
@@ -73,10 +73,62 @@ namespace REST
     }
 
     // SERVER
-    Server::Server(const std::string &_addrress) : listener(_addrress)
+    Server::Server(const std::string &_addrress, SQLDriver& _driver) : listener(_addrress),driver(_driver)
     {
-        listener.support(methods::GET, handle_get);
+        /*auto fun=[this](http_request request){
+            std::wcout << L"\nhandle POST\n";
+        bool isSuccess{false};
+
+        request.headers().set_content_type("application/json");
+
+        auto answer = json::value::object();
+        request.extract_json().then([&answer, &request, &isSuccess](pplx::task<json::value> task)
+                                    {
+        try{
+            auto a=task.get();
+            auto b=a.serialize();
+            std::wstring req=std::wstring(b.begin(),b.end());
+            std::wcout<<req<<std::endl;
+
+            auto number=a.at("number");
+            auto c=number.serialize();
+            std::wcout<<number.as_integer()<<std::endl;
+            std::wstring res=std::wstring(c.begin(),c.end());
+            std::wcout<<res<<std::endl;
+
+            auto num=number.as_integer();
+            if(num<10){
+                answer["is_lower_than_ten"]=1;
+                isSuccess=true;
+            }else{
+                answer["is_lower_than_ten"]=0;
+                isSuccess=false;
+            }
+
+        }catch(const std::exception& e){
+            std::wcout<<e.what()<<std::endl;
+        } })
+            .wait();
+
+        request.reply(status_codes::OK, answer);
+        };*/
+
+        auto get=[this](http_request request){
+            std::wcout << L"\nhandle GET\n";
+
+        //auto answer = json::value::object();
+        auto a = request.relative_uri();
+        std::wstring o1 = std::wstring(a.path().begin(), a.path().end());
+        std::wcout<<o1<<std::endl;
+        auto answer=driver.getAllProductsInformation();
+        std::wcout<<"Dupa\n";
+        display_json(answer, "S: ");
+        request.reply(status_codes::OK, answer);
+        };
+
+        //listener.support(methods::GET, handle_get);
         listener.support(methods::POST, handle_post);
+        listener.support(methods::GET, get);
     }
 
     void Server::run()
