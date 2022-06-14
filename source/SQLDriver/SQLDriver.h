@@ -18,6 +18,7 @@ public:
     web::json::value getProductData(const std::string& _id);
     //{"product":"apple","quantity":9,"price":2.99}
     bool updateData(std::vector<std::array<std::string,2>>& args, const int _id);
+    bool updateDataValue(const std::string& field,const std::string& entity_name,const std::string& newFieldValue);
 private:
     CommunicationManager communicationManager;
     static constexpr int productTableEntitySize{4};

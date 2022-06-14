@@ -12,6 +12,7 @@ namespace REST
 
     // Testing:
     // curl -X POST http://127.0.0.1:8080 -H "Content: application/json" -d '{"product":"a","number":9}'
+    //curl -X POST http://127.0.0.1:8080 -H "Content: application/json" -d '{"items":[{"product":"apple","number":9}]}'
     //curl -X POST http://127.0.0.1:8080 -H "Content: application/json" -d '{"items":[{"product":"a","number":9},{"product":"a","number":9}]}'
     void handle_post(http_request request)
     {
@@ -60,21 +61,55 @@ namespace REST
         request.headers().set_content_type("application/json");
 
         auto answer = json::value::object();
-        request.extract_json().then([&answer, &request](pplx::task<json::value> task)
+        request.extract_json().then([&answer, &request,this](pplx::task<json::value> task)
                                     {
         try{
             auto a=task.get();
             auto myArray=a.at("items").as_array();
-            std::vector<std::pair<std::string,int>> itemsToBuy;
+            std::vector<Order> itemsToBuy;
             for(const auto& it: myArray){
                 auto key=it.at("product").as_string();
                 auto val=it.at("number").as_integer();
                 std::string skey{key};
-                //itemsToBuy.push_back{std::make_pair<std::string,int>(skey,val)};
+                itemsToBuy.push_back(Order(skey,val));
                 std::wstring temp=std::wstring(key.begin(),key.end());
                 std::wcout<<temp<<" "<<val<<std::endl;
             }
-            
+            double totalPrice{0.0};
+            for(auto& it: itemsToBuy){
+                std::wcout<<"a\n";
+                auto val=driver.getProductData(it.name);
+                display_json(val,"S: ");
+                //if(val.has_field("price")&&val.has_field("quantity"))
+                {
+                    try{
+                       /* std::wcout<<"b\n";
+                        const auto number=val.at("quantity").as_integer();
+                        if(number>=it.quantity){
+                            std::wcout<<"c\n";
+                            const auto price=val.at("price").as_double();
+                            std::wcout<<"d\n";
+                            totalPrice+=static_cast<double>(number*price);
+                            std::wcout<<"e\n";
+                            const int newQuantity=number-it.quantity;
+                            std::wcout<<"f\n";*/
+                            driver.updateDataValue("quantity",it.name,std::to_string(29));
+                            /*std::wcout<<"g\n";
+                            it.succesfullyUpdated=true;*/
+                        //}
+                    }catch(const std::exception& e){
+                        
+                    }
+                }
+                std::wcout<<"z\n";
+            }
+            /*
+            foreach:
+                -get price- add to total cost
+                -update element
+            send to mongo db
+            send back response: total cost
+            */
 
         }catch(const std::exception& e){
             std::wcout<<e.what()<<std::endl;

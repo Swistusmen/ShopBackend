@@ -25,6 +25,7 @@ web::json::value SQLDriver::getProductData(const std::string& _id)
             message+=it;
         }
     }
+    std::cout<<"Products: "<<message<<std::endl;
     auto& response=communicationManager.make_request("select product, quantity, price from myshop where product = "+message);
     while(true){
        if(response.getResponse().has_value()){
@@ -33,6 +34,18 @@ web::json::value SQLDriver::getProductData(const std::string& _id)
     }
     const auto table=decodeSQLMessage(response.getResponse().value(),3);
     return mapTableToJSON(table,{"product","quantity","price"});
+}
+
+bool SQLDriver::updateDataValue(const std::string& field,const std::string& entity_name,const std::string& newFieldValue)
+{
+    auto& response=communicationManager.make_request("update myshop set "+field + " = "+newFieldValue+" where product = "+entity_name);
+    while(true){
+       if(response.getResponse().has_value()){
+           break;
+       }
+    }
+    std::cout<<"RECEIVED: "<<response.getResponse().value()<<std::endl;
+    return true;
 }
 
 bool SQLDriver::updateData(std::vector<std::array<std::string,2>>& args, const int _id)
