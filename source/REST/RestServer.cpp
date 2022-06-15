@@ -77,32 +77,27 @@ namespace REST
             }
             double totalPrice{0.0};
             for(auto& it: itemsToBuy){
-                std::wcout<<"a\n";
                 auto val=driver.getProductData(it.name);
                 display_json(val,"S: ");
-                //if(val.has_field("price")&&val.has_field("quantity"))
+                if(val.has_field("price")&&val.has_field("quantity"))
                 {
                     try{
-                       /* std::wcout<<"b\n";
-                        const auto number=val.at("quantity").as_integer();
+                        const auto number=std::stoi(val.at("quantity").as_string());
                         if(number>=it.quantity){
-                            std::wcout<<"c\n";
-                            const auto price=val.at("price").as_double();
-                            std::wcout<<"d\n";
-                            totalPrice+=static_cast<double>(number*price);
-                            std::wcout<<"e\n";
+                            const auto price=std::stod(val.at("price").as_string());
+                            totalPrice+=static_cast<double>(it.quantity*price);
                             const int newQuantity=number-it.quantity;
-                            std::wcout<<"f\n";*/
-                            driver.updateDataValue("quantity",it.name,std::to_string(29));
-                            /*std::wcout<<"g\n";
-                            it.succesfullyUpdated=true;*/
-                        //}
+                            driver.updateDataValue("quantity",it.name,std::to_string(newQuantity));
+                            it.succesfullyUpdated=true;
+                        }
                     }catch(const std::exception& e){
                         
+                        std::wcout<<e.what()<<std::endl;
                     }
                 }
-                std::wcout<<"z\n";
             }
+            answer["cost"]=totalPrice;
+
             /*
             foreach:
                 -get price- add to total cost
